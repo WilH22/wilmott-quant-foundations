@@ -8,10 +8,6 @@ C++/run
 *.out
 *.exe
 
-# Output files
-**/*.csv
-C++/output/
-
 # Python
 __pycache__/
 .ipynb_checkpoints/
