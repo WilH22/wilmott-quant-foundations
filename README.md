@@ -19,7 +19,9 @@ I implement concepts step-by-step in both **Python** and **C++**, focusing on bu
   - Reverse cash-and-carry
 - Arbitrage profit computation
 - Tolerance handling for floating-point precision
-
+- Visualize forward payoff profiles
+- Add dividend yield extension
+  
 #### Languages Used:
 - Python (Notebook implementation)
 - C++ (Console application)
@@ -39,8 +41,6 @@ I implement concepts step-by-step in both **Python** and **C++**, focusing on bu
 ## 🚀 Next Steps
 
 ### Short-Term
-- Visualize forward payoff profiles
-- Add dividend yield extension
 - Add discrete compounding version
 
 ### Medium-Term
