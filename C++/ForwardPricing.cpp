@@ -4,6 +4,8 @@
 #include <string> // std::string
 #include <utility> // std::pair
 #include <fstream> // std::pl
+#include <vector> // std::vector
+
 // Terminal workflow g++ xxxxxx.cpp -std=c++23 -O2 -o run && ./run
 
 double forward_price(double S0, double r, double q, double T) {
@@ -12,6 +14,7 @@ double forward_price(double S0, double r, double q, double T) {
     return S0 * std::exp((r-q)*T);
 }
 
+// Detect Arbitrage Function
 std::string detect_arbitrage(double S0, double r, double T, double q, double F_market) {
     double F_theoretical = forward_price (S0,r,q,T);
 
@@ -23,6 +26,12 @@ std::string detect_arbitrage(double S0, double r, double T, double q, double F_m
         return ("No arbitrage");}
 }
 
+// Grouping S0, r, q, T, S_Market 
+struct Scenario {
+    double S0, r, q, T, F_market;
+};
+
+// Arbitrage Profit Function
 std::pair<double, std::string> arbitrage_profit(double S0, double r, double T, double q, double F_market, double tol= 1e-6) {
     double F_theoretical = forward_price(S0, r, q, T);
     double diff = F_market - F_theoretical;
@@ -36,6 +45,7 @@ std::pair<double, std::string> arbitrage_profit(double S0, double r, double T, d
     }
 }
 
+// Forward Payoff Function
 double forward_payoff (double S_T, double K) {
     return S_T - K;
 }
@@ -71,6 +81,24 @@ int main () {
     std::cout << std::fixed << std::setprecision(4);
     std::cout << "Generated forward_payoff.csv\n";
     std::cout << "Fair forward K = " << K << "\n";
+
+    
+    std::vector<Scenario> cases = {
+        {100.0, 0.05, 0.00, 1.0, 120.0},
+        {100.0, 0.05, 0.02, 1.0, 105.0},
+        {100.0, 0.03, 0.04, 0.5, 98.0}
+    };
+    std::cout <<std::fixed << std::setprecision(6);
+    std::cout <<"S0\tr\tq\tT\tF_mkt\tF_theory\tmispricing\n";
+
+    for (const auto& sc : cases){
+        double F_theory = forward_price (sc.S0, sc.r, sc.q, sc.T);
+        double mispricing = sc.F_market - F_theory;
+
+        std::cout << sc.S0 << "\t" << sc.r << "\t" << sc.q << "\t" << sc.T << "\t" << sc.F_market << "\t" << F_theory << "\t" << mispricing << "\n";
+     }
+    
+    
     return 0 ;
 }
 
