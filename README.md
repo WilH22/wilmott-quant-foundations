@@ -14,7 +14,7 @@ I implement concepts step-by-step in both **Python** and **C++**, focusing on bu
 
 #### Implemented:
 - Forward pricing under continuous compounding (cost-of-carry framework)
-- Dividend-adjusted forward valuation: \( F_0 = S_0 e^{(r - q)T} \)
+- Dividend-adjusted forward valuation: ST = S0 * exp((r - y) * T)
 - Arbitrage detection:
   - Cash-and-carry
   - Reverse cash-and-carry
