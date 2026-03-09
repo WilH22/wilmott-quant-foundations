@@ -22,6 +22,7 @@ I implement concepts step-by-step in both **Python** and **C++**, focusing on bu
 - Multi-scenario forward mispricing analysis (C++ & Python)
 - Floating-point tolerance handling for arbitrage detection
 - Payoff profile visualization and CSV export pipeline
+- Stochastic processes implementation (European and Asian Option Price Call)
   
 #### Languages Used:
 - Python (Notebook implementation)
@@ -36,13 +37,13 @@ I implement concepts step-by-step in both **Python** and **C++**, focusing on bu
 - Cost-of-carry model
 - Risk-free discounting
 - Arbitrage mechanics
+- Stochastic processes
+- Geometric Brownian Motion (GBM)
 
 ---
 
 ## 🚀 Next Steps
 
-### Short-Term
-- Add discrete compounding version
 
 ### Medium-Term
 - Monte Carlo simulation framework
@@ -50,7 +51,6 @@ I implement concepts step-by-step in both **Python** and **C++**, focusing on bu
 - Volatility modeling
 
 ### Long-Term
-- Stochastic processes implementation
 - Greeks and sensitivity analysis
 - Structured risk modelling engine
 
