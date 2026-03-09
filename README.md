@@ -13,14 +13,15 @@ I implement concepts step-by-step in both **Python** and **C++**, focusing on bu
 ### Chapter 1 – Products and Markets
 
 #### Implemented:
-- Theoretical forward pricing using cost-of-carry
+- Forward pricing under continuous compounding (cost-of-carry framework)
+- Dividend-adjusted forward valuation: \( F_0 = S_0 e^{(r - q)T} \)
 - Arbitrage detection:
   - Cash-and-carry
   - Reverse cash-and-carry
-- Arbitrage profit computation
-- Tolerance handling for floating-point precision
-- Visualize forward payoff profiles
-- Add dividend yield extension
+- Arbitrage profit computation at maturity (per unit)
+- Multi-scenario forward mispricing analysis (C++ & Python)
+- Floating-point tolerance handling for arbitrage detection
+- Payoff profile visualization and CSV export pipeline
   
 #### Languages Used:
 - Python (Notebook implementation)
