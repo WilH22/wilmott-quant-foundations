@@ -103,11 +103,6 @@ Results from the project show:
 
 ---
 
-# 📊 Example Output
-Python:
-
----
-
 # 🔜 Next Steps
 
 ### Short Term
