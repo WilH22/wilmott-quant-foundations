@@ -22,7 +22,8 @@ I implement concepts step-by-step in both **Python** and **C++**, focusing on bu
 - Multi-scenario forward mispricing analysis (C++ & Python)
 - Floating-point tolerance handling for arbitrage detection
 - Payoff profile visualization and CSV export pipeline
-- Stochastic processes implementation (European and Asian Option Price Call)
+- Stochastic processes implementation (Monte Carlo European and Asian Option Price Call-Put)
+- Black-Scholes option price Call-Put 
   
 #### Languages Used:
 - Python (Notebook implementation)
@@ -39,14 +40,15 @@ I implement concepts step-by-step in both **Python** and **C++**, focusing on bu
 - Arbitrage mechanics
 - Stochastic processes
 - Geometric Brownian Motion (GBM)
-
+- Black-Scholes Pricing
+- Monte Carlo Simulation
+- Call-Put Option Pricing
 ---
 
 ## 🚀 Next Steps
 
 
 ### Medium-Term
-- Monte Carlo simulation framework
 - Portfolio risk metrics (VaR)
 - Volatility modeling
 
