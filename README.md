@@ -104,9 +104,7 @@ Results from the project show:
 ---
 
 # 📊 Example Output
-
-
-Monte Carlo simulations converge toward the analytical solution.
+Python:
 
 ---
 
