@@ -40,7 +40,9 @@ I implement concepts step-by-step in both **Python** and **C++**, focusing on bu
 - Arbitrage mechanics
 - Stochastic processes
 - Geometric Brownian Motion (GBM)
-
+- Black-Scholes Pricing
+- Monte Carlo Simulation
+- Call-Put Option Pricing
 ---
 
 ## 🚀 Next Steps
