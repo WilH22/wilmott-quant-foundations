@@ -85,12 +85,17 @@ GBM_Theoretical_Result gbm_difference (double S0, double r, double y, double sig
     return {simulated_mean, theoretical_mean, difference};
 }
 
+//Parity RHS Function
+double parity_lhs_function(double call_price, double put_price) {
+    return call_price - put_price;
+}
 // European Option Price Function
 struct european_option_result{
     double average_payoff_call;
     double call_option_price;
     double average_payoff_put;
     double put_option_price;
+    double parity_lhs;
 };
 
 european_option_result european_option_price (double S0, double r, double y, double T, double sigma, int N, double K) {
@@ -111,7 +116,8 @@ european_option_result european_option_price (double S0, double r, double y, dou
     double call_option_price = average_payoff_call * std::exp(-r*T);
     double average_payoff_put = total_payoff_put / N;
     double put_option_price = average_payoff_put * std::exp(-r*T);
-    return {average_payoff_call, call_option_price, average_payoff_put, put_option_price};
+    double parity_lhs = parity_lhs_function(call_option_price , put_option_price);
+    return {average_payoff_call, call_option_price, average_payoff_put, put_option_price, parity_lhs};
 }
 
 // Cummulative Distribution Function
@@ -122,6 +128,7 @@ double normal_cdf (double x){
 struct black_scholes_result{
     double black_scholes_call;
     double black_scholes_put;
+    double parity_lhs;
 };
 
 black_scholes_result black_scholes_price (double S0, double r, double y, double T, double sigma, double K) {
@@ -131,7 +138,8 @@ black_scholes_result black_scholes_price (double S0, double r, double y, double 
 
     double black_scholes_call = (S0*exp(-y*T) * normal_cdf(d1)) - (K * exp(-r*T) * normal_cdf(d2));
     double black_scholes_put =  (K * exp(-r*T) * normal_cdf(-d2)) - (S0*exp(-y*T) * normal_cdf(-d1));
-    return {black_scholes_call, black_scholes_put};
+    double parity_lhs = parity_lhs_function(black_scholes_call, black_scholes_put);
+    return {black_scholes_call, black_scholes_put, parity_lhs};
 }
 
 // Asian Option Call Price Function
@@ -140,6 +148,7 @@ struct asian_option_result{
     double call_option_price;
     double average_payoff_put;
     double put_option_price;
+    double parity_lhs;
 };
 
 asian_option_result asian_option_price (double S0, double r, double y, double T, double sigma, int N, int M, double K) {
@@ -168,7 +177,8 @@ asian_option_result asian_option_price (double S0, double r, double y, double T,
     double call_option_price = average_payoff_call * std::exp(-r*T);
     double average_payoff_put = total_payoff_put / N;
     double put_option_price = average_payoff_put * std::exp(-r*T);
-    return {average_payoff_call, call_option_price, average_payoff_put, put_option_price};
+    double parity_lhs = parity_lhs_function(call_option_price,put_option_price);
+    return {average_payoff_call, call_option_price, average_payoff_put, put_option_price,parity_lhs};
 }
 
 // MAIN
@@ -249,24 +259,37 @@ int main () {
     // European option call price
     european_option_result euro = european_option_price (S0, r, y, T, sigma, N, K);
     std::cout << std::fixed << std::setprecision(4);
-    std::cout << "\n" << "European Average option payoff (Call) :" << euro.average_payoff_call << "\n";
-    std::cout << "European Call option price            :" << euro.call_option_price << "\n";
-    std::cout << "European Average option payoff (Put)  :" << euro.average_payoff_put << "\n";
-    std::cout << "European Put option price             :" << euro.put_option_price << "\n";
+    //std::cout << "\n" << "European (Monte Carlo) Average option payoff (Call) :" << euro.average_payoff_call << "\n";
+    std::cout << "\n" << "European (Monte Carlo) Call option price            :" << euro.call_option_price << "\n";
+    //std::cout << "European (Monte Carlo) Average option payoff (Put)  :" << euro.average_payoff_put << "\n";
+    std::cout << "European (Monte Carlo) Put option price             :" << euro.put_option_price << "\n";
     
     // Black Scholes Price
     black_scholes_result bs = black_scholes_price (S0, r, y, T, sigma, K);
     std::cout << std::fixed << std::setprecision(4);
-    std::cout << "\n";
-    std::cout << "Black-Scholes Option Call price       :" << bs.black_scholes_call << "\n";
+    std::cout << "\nBlack-Scholes Option Call price       :" << bs.black_scholes_call << "\n";
     std::cout << "Black-Scholes Option Put price        :" << bs.black_scholes_put  << "\n";
     
     // Asian option call price
     asian_option_result asia = asian_option_price (S0, r, y, T, sigma, N, M, K);
-    std::cout << "\n" << "Asian Average option payoff (Call)    :" << asia.average_payoff_call << "\n";
-    std::cout << "Asian Call option price               :" << asia.call_option_price << "\n";
-    std::cout << "Asian Average option payoff (Put)     :" << asia.average_payoff_put << "\n";
-    std::cout << "Asian Put option price                :" << asia.put_option_price << "\n";
+    //std::cout << "\n" << "Asian (Monte Carlo) Average option payoff (Call)    :" << asia.average_payoff_call << "\n";
+    std::cout << "\n" << "Asian (Monte Carlo) Call option price               :" << asia.call_option_price << "\n";
+    //std::cout << "Asian (Monte Carlo) Average option payoff (Put)     :" << asia.average_payoff_put << "\n";
+    std::cout << "Asian (Monte Carlo) Put option price                :" << asia.put_option_price << "\n\n\n";
+    
+    //Parity Test
+    double parity_rhs = S0*exp(-y * T) - K * exp(-r * T);
+    std::cout << "Call-Put Parity Test," <<"\n";
+    std::cout << "RHS = S0*exp(-yT) - K*exp(-rT)              :" << parity_rhs << "\n\n";
+    std::cout << "LHS = Call Price - Put Price" <<"\n";
+    std::cout << "European Monte Carlo Option Pricing LHS     :" << euro.call_option_price - euro.put_option_price << "\n";
+    std::cout << "European Monte Carlo Option Pricing LHS-RHS :" << parity_rhs - euro.parity_lhs << "\n\n";
+    std::cout << "Black-Scholes Option Pricing LHS            :" << bs.black_scholes_call - bs.black_scholes_put << "\n";
+    std::cout << "Black-Scholes Option Pricing LHS-RHS        :" << parity_rhs - bs.parity_lhs << "\n\n";
+    std::cout << "Asian Monte Carlo Option Pricing LHS        :" << asia.call_option_price - asia.put_option_price << "\n";
+    std::cout << "Asian Monte Carlo Option Pricing LHS-RHS    :" << parity_rhs - asia.parity_lhs << "\n";
+    
+
     return 0 ;
 }
 
