@@ -63,6 +63,7 @@ struct GBM_Theoretical_Result{
     double theoretical_mean;
     double difference;
 };
+
 GBM_Theoretical_Result gbm_difference (double S0, double r, double y, double sigma, double T, int N) {
     // Random number generator
     std::mt19937 gen(std::random_device{}());
@@ -84,38 +85,71 @@ GBM_Theoretical_Result gbm_difference (double S0, double r, double y, double sig
     return {simulated_mean, theoretical_mean, difference};
 }
 
-// European Option Call Price Function
-struct european_option_call_result{
-    double average_payoff;
+// European Option Price Function
+struct european_option_result{
+    double average_payoff_call;
     double call_option_price;
+    double average_payoff_put;
+    double put_option_price;
 };
-european_option_call_result european_option_call_price (double S0, double r, double y, double T, double sigma, int N, double K) {
+
+european_option_result european_option_price (double S0, double r, double y, double T, double sigma, int N, double K) {
     // Random number generator
     std::mt19937 gen(std::random_device{}());
     std::normal_distribution<double> dist(0.0, 1.0);
-    double total_payoff = 0.0;
+    double total_payoff_call = 0.0;
+    double total_payoff_put = 0.0;
     for (int i = 0; i < N; i++) {
         double Z = dist(gen);
         double ST = gbm_price (S0, r, y, sigma, T, Z);
-        double payoff = std::max(ST-K, 0.0);
-        total_payoff += payoff ;
+        double payoff_call = std::max(ST-K, 0.0);
+        total_payoff_call += payoff_call ;
+        double payoff_put = std::max(K-ST, 0.0);
+        total_payoff_put += payoff_put ;
     }
-    double average_payoff = total_payoff / N;
-    double call_option_price = average_payoff * std::exp(-r*T);
-    return {average_payoff, call_option_price};
+    double average_payoff_call = total_payoff_call / N;
+    double call_option_price = average_payoff_call * std::exp(-r*T);
+    double average_payoff_put = total_payoff_put / N;
+    double put_option_price = average_payoff_put * std::exp(-r*T);
+    return {average_payoff_call, call_option_price, average_payoff_put, put_option_price};
+}
+
+// Cummulative Distribution Function
+double normal_cdf (double x){
+    return 0.5 * (1.0 + erf(x / std::sqrt(2.0)));
+}
+
+struct black_scholes_result{
+    double black_scholes_call;
+    double black_scholes_put;
+};
+
+black_scholes_result black_scholes_price (double S0, double r, double y, double T, double sigma, double K) {
+    
+    double d1 = (log(S0/K) + (r -y + 0.5*sigma*sigma)*T) / (sigma*sqrt(T));
+    double d2 = d1 - sigma*sqrt(T);
+
+    double black_scholes_call = (S0*exp(-y*T) * normal_cdf(d1)) - (K * exp(-r*T) * normal_cdf(d2));
+    double black_scholes_put =  (K * exp(-r*T) * normal_cdf(-d2)) - (S0*exp(-y*T) * normal_cdf(-d1));
+    return {black_scholes_call, black_scholes_put};
 }
 
 // Asian Option Call Price Function
-struct asian_option_call_result{
-    double average_payoff;
+struct asian_option_result{
+    double average_payoff_call;
     double call_option_price;
+    double average_payoff_put;
+    double put_option_price;
 };
-asian_option_call_result asian_option_call_price (double S0, double r, double y, double T, double sigma, int N, int M, double K) {
+
+asian_option_result asian_option_price (double S0, double r, double y, double T, double sigma, int N, int M, double K) {
     double dt = T / M;
     // Random number generator
     std::mt19937 gen(std::random_device{}());
     std::normal_distribution<double> dist(0.0, 1.0);
-    double total_payoff = 0.0;
+
+    double total_payoff_call = 0.0;
+    double total_payoff_put = 0.0;
     for (int i = 0; i < N; i++) {
         double ST = S0;
         double ST_sum = 0.0;
@@ -125,12 +159,16 @@ asian_option_call_result asian_option_call_price (double S0, double r, double y,
             ST_sum += ST;
         }
         double ST_mean = ST_sum / M;    
-        double payoff = std::max(ST_mean - K, 0.0);
-        total_payoff += payoff; 
+        double payoff_call = std::max(ST_mean - K, 0.0);
+        total_payoff_call += payoff_call;
+        double payoff_put = std::max(K - ST_mean, 0.0);
+        total_payoff_put += payoff_put; 
     }
-    double average_payoff = total_payoff / N;
-    double call_option_price = average_payoff * std::exp(-r*T);
-    return {average_payoff, call_option_price};
+    double average_payoff_call = total_payoff_call / N;
+    double call_option_price = average_payoff_call * std::exp(-r*T);
+    double average_payoff_put = total_payoff_put / N;
+    double put_option_price = average_payoff_put * std::exp(-r*T);
+    return {average_payoff_call, call_option_price, average_payoff_put, put_option_price};
 }
 
 // MAIN
@@ -209,15 +247,26 @@ int main () {
     std::cout << "Difference        :" << gbm.difference << "\n";
 
     // European option call price
-    european_option_call_result euro = european_option_call_price (S0, r, y, T, sigma, N, K);
+    european_option_result euro = european_option_price (S0, r, y, T, sigma, N, K);
     std::cout << std::fixed << std::setprecision(4);
-    std::cout << "\n" << "European Average option payoff  :" << euro.average_payoff << "\n";
-    std::cout << "European Call option price      :" << euro.call_option_price << "\n";
-
+    std::cout << "\n" << "European Average option payoff (Call) :" << euro.average_payoff_call << "\n";
+    std::cout << "European Call option price            :" << euro.call_option_price << "\n";
+    std::cout << "European Average option payoff (Put)  :" << euro.average_payoff_put << "\n";
+    std::cout << "European Put option price             :" << euro.put_option_price << "\n";
+    
+    // Black Scholes Price
+    black_scholes_result bs = black_scholes_price (S0, r, y, T, sigma, K);
+    std::cout << std::fixed << std::setprecision(4);
+    std::cout << "\n";
+    std::cout << "Black-Scholes Option Call price       :" << bs.black_scholes_call << "\n";
+    std::cout << "Black-Scholes Option Put price        :" << bs.black_scholes_put  << "\n";
+    
     // Asian option call price
-    asian_option_call_result asia = asian_option_call_price (S0, r, y, T, sigma, N, M, K);
-    std::cout << "\n" << "Asian Average option payoff  :" << asia.average_payoff << "\n";
-    std::cout << "Asian Call option price      :" << asia.call_option_price << "\n";
+    asian_option_result asia = asian_option_price (S0, r, y, T, sigma, N, M, K);
+    std::cout << "\n" << "Asian Average option payoff (Call)    :" << asia.average_payoff_call << "\n";
+    std::cout << "Asian Call option price               :" << asia.call_option_price << "\n";
+    std::cout << "Asian Average option payoff (Put)     :" << asia.average_payoff_put << "\n";
+    std::cout << "Asian Put option price                :" << asia.put_option_price << "\n";
     return 0 ;
 }
 
