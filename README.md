@@ -4,9 +4,15 @@ This repository documents my structured study of:
 
 **Paul Wilmott — Introduces Quantitative Finance**
 
-The goal of this project is to implement key quantitative finance concepts step-by-step in **Python and C++**, focusing on building intuition through code.
+The goal of this project is to build a **strong conceptual foundation in quantitative finance by implementing models directly from theory into code.**
 
-The project evolves progressively from **forward pricing and arbitrage detection** to **stochastic modeling and option pricing**.
+The focus is on **learning and intuition**, rather than production-ready code.
+
+Each concept from the book is translated into **working implementations in both Python and C++**, allowing exploration of numerical behavior, arbitrage mechanics, and stochastic modeling.
+
+This repository serves as a **learning laboratory** for core quantitative finance concepts.
+
+A separate repository will later be developed for a **clean, production-style option pricing engine.**
 
 ---
 
@@ -14,31 +20,44 @@ The project evolves progressively from **forward pricing and arbitrage detection
 
 ## Chapter 1 – Products and Markets
 
-### Implemented
+### Forward Pricing & Arbitrage
 
-#### Forward Pricing & Arbitrage
-- Forward pricing under continuous compounding (cost-of-carry model)
-- Dividend-adjusted forward valuation:
+Implemented the **cost-of-carry model** for forward valuation and tested arbitrage opportunities under different market conditions.
+
+Forward pricing with dividend yield:
 
 \[
 F_0 = S_0 e^{(r-y)T}
 \]
 
-- Arbitrage detection:
-  - Cash-and-carry
-  - Reverse cash-and-carry
+Features implemented:
+
+- Forward pricing under continuous compounding
+- Dividend-adjusted forward valuation
+- Cash-and-carry arbitrage detection
+- Reverse cash-and-carry arbitrage detection
 - Arbitrage profit calculation at maturity
 - Multi-scenario forward mispricing analysis
-- Floating-point tolerance handling
+- Floating point tolerance handling
 - CSV export for payoff analysis
 
 ---
 
-### Stochastic Price Modeling
+# 📈 Stochastic Price Modeling
 
-- Geometric Brownian Motion (GBM) simulation
-- Monte Carlo estimation of terminal stock price
-- Validation of simulated expectation:
+### Geometric Brownian Motion (GBM)
+
+Implemented stochastic simulation of asset prices using the GBM model:
+
+\[
+S_T = S_0 \exp\left((r-y-\frac{1}{2}\sigma^2)T + \sigma\sqrt{T}Z\right)
+\]
+
+Implemented features:
+
+- GBM simulation
+- Monte Carlo estimation of terminal prices
+- Empirical validation of the theoretical expectation
 
 \[
 E[S_T] = S_0 e^{(r-y)T}
@@ -46,34 +65,63 @@ E[S_T] = S_0 e^{(r-y)T}
 
 ---
 
-### Option Pricing
+# 💰 Option Pricing
 
-#### Monte Carlo Methods
+## Monte Carlo Methods
+
+Monte Carlo simulation is used to estimate option prices under GBM dynamics.
+
+Implemented:
+
 - European Call pricing
 - European Put pricing
 - Asian Call pricing
 - Asian Put pricing
 
-#### Analytical Pricing
-- Black-Scholes formula for European options
+Features included:
+
+- Path simulation
+- Standard error estimation
+- Confidence intervals
+- Antithetic variates for variance reduction
+
+---
+
+## Analytical Pricing
+
+### Black–Scholes Model
+
+Closed-form pricing for European options using the Black–Scholes model:
 
 \[
 C = S_0 e^{-yT} N(d_1) - K e^{-rT} N(d_2)
 \]
 
+Implemented:
+
+- Call pricing
+- Put pricing
+- Greeks calculation
+
+Greeks currently implemented:
+
+- Delta
+- Gamma
+- Theta
+
 ---
 
-### Model Validation
+# 🔍 Model Validation
 
-#### Put-Call Parity Verification
+### Put–Call Parity
 
-European options satisfy the no-arbitrage condition:
+European options must satisfy the no-arbitrage condition:
 
 \[
 C - P = S_0 e^{-yT} - K e^{-rT}
 \]
 
-Results from the project show:
+Observed results:
 
 - **Black-Scholes pricing satisfies parity exactly**
 - **Monte Carlo European pricing approximates parity (simulation noise)**
@@ -90,30 +138,59 @@ Results from the project show:
 - Arbitrage mechanics
 - Geometric Brownian Motion (GBM)
 - Monte Carlo simulation
+- Variance reduction (Antithetic Variates)
 - Black-Scholes option pricing
+- Greeks
 - Path-dependent derivatives (Asian options)
-- Put-Call Parity
+- Put–Call Parity validation
 
 ---
 
 # 🛠 Languages Used
 
-- **Python** – notebook implementation and visualization  
-- **C++** – console implementation focused on performance and numerical understanding
+**Python**
+
+- Jupyter notebooks for experimentation
+- Visualization and statistical validation
+
+**C++**
+
+- Console implementation
+- Focus on numerical understanding and performance
 
 ---
 
 # 🔜 Next Steps
 
-### Short Term
-- Greeks implementation (Delta, Gamma, Vega, Theta)
-
-### Medium Term
+## Short Term
 - Monte Carlo convergence analysis
 - Volatility sensitivity studies
-- Option price vs strike / volatility visualization
+- Strike sensitivity analysis
+- Option price visualization
 
-### Long Term
-- Stochastic calculus implementation
+## Medium Term
+- Control variates for variance reduction
+- Monte Carlo Greeks estimation
+- Variance comparison across estimators
+
+## Long Term
+- Stochastic calculus implementations
 - PDE-based option pricing
+- Finite difference methods
 - Multi-asset derivatives pricing
+
+---
+
+# Future Project
+
+This repository focuses on **learning and experimentation**.
+
+A separate repository will be developed for a **clean, modular option pricing engine**, including:
+
+- reusable pricing interfaces
+- multiple stochastic models
+- advanced variance reduction
+- calibration tools
+- performance optimization
+
+---
