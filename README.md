@@ -49,7 +49,7 @@ Features implemented:
 
 Implemented stochastic simulation of asset prices using the GBM model:
 
-S_T = S_0 \exp \left( (r - y - \tfrac{1}{2}\sigma^2)T + \sigma \sqrt{T} Z \right)
+\[S_T = S_0 * exp(r - y - (sigma^2)/2) * T + sigma * sqrt(T) * Z)\]
 
 Implemented features:
 
